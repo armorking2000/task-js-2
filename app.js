@@ -71,19 +71,19 @@ header.append(logo, headerCart);
 const main = document.createElement("main");
 main.id = "main";
 
-const label = document.createElement("p");
-label.className = "main-paragh";
-label.textContent = "CURATED FOR YOU";
+const mainLabel = document.createElement("p");
+mainLabel.className = "main-label";
+mainLabel.textContent = "CURATED FOR YOU";
 
-const title = document.createElement("h1");
-title.textContent = "shop the collection";
+const mainTitle = document.createElement("h1");
+mainTitle.textContent = "shop the collection";
 
-const count = document.createElement("span");
-count.id = "product-card";
-count.textContent = `${products.length} products`;
+const productCount = document.createElement("span");
+productCount.id = "product-count";
+productCount.textContent = `${products.length} products`;
 
-const productsEl = document.createElement("section");
-productsEl.id = "products";
+const productsSection = document.createElement("section");
+productsSection.id = "products";
 
 // ساخت cart
 const cartSection = document.createElement("section");
@@ -125,7 +125,7 @@ subtotalRow.append(subtotalLabel, subtotalValue);
 
 cartSection.append(cartLabel, cartTop, emptyMessage, cartList, subtotalRow);
 
-main.append(label, title, count, productsEl, cartSection);
+main.append(mainLabel, mainTitle, productCount, productsSection, cartSection);
 document.body.append(header, main);
 
 function updateCart() {
@@ -148,10 +148,10 @@ for (const product of products) {
   card.dataset.productId = product.id;
 
   const imageWrap = document.createElement("div");
-  imageWrap.className = "cardImage";
+  imageWrap.className = "card-image";
 
   const image = document.createElement("img");
-  image.className = "image";
+  image.className = "card-img";
   image.src = product.image;
   image.alt = product.name;
   imageWrap.appendChild(image);
@@ -163,8 +163,8 @@ for (const product of products) {
     imageWrap.appendChild(badge);
   }
 
-  const info = document.createElement("div");
-  info.className = "div-column";
+  const cardInfo = document.createElement("div");
+  cardInfo.className = "card-info";
 
   const name = document.createElement("strong");
   name.textContent = product.name;
@@ -175,21 +175,21 @@ for (const product of products) {
   const description = document.createElement("small");
   description.textContent = product.description;
 
-  info.append(name, category, description);
+  cardInfo.append(name, category, description);
 
-  const row = document.createElement("div");
-  row.className = "div-row";
+  const cardFooter = document.createElement("div");
+  cardFooter.className = "card-footer";
 
   const price = document.createElement("p");
   price.textContent = `$${product.price}`;
 
-  const button = document.createElement("button");
-  button.textContent = "+ add to cart";
+  const addButton = document.createElement("button");
+  addButton.textContent = "+ add to cart";
 
-  row.append(price, button);
+  cardFooter.append(price, addButton);
 
-  card.append(imageWrap, info, row);
-  productsEl.appendChild(card);
+  card.append(imageWrap, cardInfo, cardFooter);
+  productsSection.appendChild(card);
 
   const cartRow = document.createElement("div");
   cartRow.className = "cart-row";
@@ -209,7 +209,7 @@ for (const product of products) {
   cartRow.append(cartRowName, cartRowQty, cartRowPrice, removeButton);
   cartList.appendChild(cartRow);
   product.row = cartRow;
-  button.addEventListener("click", () => {
+  addButton.addEventListener("click", () => {
     product.qty++;
     cartRowQty.textContent = `× ${product.qty}`;
     cartRowPrice.textContent = `$${product.qty * product.price}`;
