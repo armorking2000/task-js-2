@@ -44,12 +44,12 @@ const products = [
 // ساخت header
 const header = document.createElement("header");
 
-const logo = document.createElement("p");
-logo.className = "logo";
-
 const logoStart = document.createElement("span");
 logoStart.className = "logo-start";
 logoStart.textContent = "mini";
+
+const logo = document.createElement("p");
+logo.className = "logo";
 
 const logoEnd = document.createTextNode("shop");
 logo.append(logoStart, logoEnd);
@@ -57,7 +57,7 @@ logo.append(logoStart, logoEnd);
 const headerCart = document.createElement("div");
 headerCart.className = "header-cart";
 
-const headerCartText = document.createElement("span");
+const headerCartText = document.createElement("p");
 headerCartText.textContent = "My Cart";
 
 const headerCartBadge = document.createElement("span");
