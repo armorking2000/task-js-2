@@ -59,6 +59,7 @@ const headerCart = document.createElement("div");
 headerCart.className = "header-cart";
 
 const headerCartText = document.createElement("p");
+headerCartText.className = "header-cart-text"
 headerCartText.textContent = "My Cart";
 
 const headerCartBadge = document.createElement("span");
@@ -127,7 +128,7 @@ subtotalRow.append(subtotalLabel, subtotalValue);
 cartSection.append(cartLabel, cartTop, emptyMessage, cartList, subtotalRow);
 
 main.append(mainLabel, mainTitle, productCount, productsSection, cartSection);
-document.body.append(header, main, );
+document.body.append(header, main);
 
 function updateCart() {
   let totalCount = 0;
@@ -140,33 +141,115 @@ function updateCart() {
   cartTitleCount.textContent = `(${totalCount})`;
   subtotalValue.textContent = `$${totalPrice}`;
   emptyMessage.hidden = totalCount > 0;
-  //function ساخت تصویر
 }
+
 function createImageWrap(product) {
-  // ساخت div برای image
-  const imageWrap = document.createElement("div")
-  imageWrap.className = "image-wrap"
-  const image = document.createElement("img")
-  image.className = "image"
-  image.src = product.image
-  image.alt = product.name
-  imageWrap.appendChild(image)
-  //استفاده از برچسب (badge)
-  if (product.badge !== 0) {
-    const badge = document.createElement("span")
-    badge.className = "badge"
-    badge.textContent = product.badge
-    imageWrap.appendChild(badge)
+  const imageWrap = document.createElement("div");
+  imageWrap.className = "image-wrap";
+  const image = document.createElement("img");
+  image.className = "image";
+  image.src = product.image;
+  image.alt = product.name;
+  imageWrap.appendChild(image);
+
+
+  if (product.badge !== "") {
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = product.badge;
+    imageWrap.appendChild(badge);
   }
-  return imageWrap
- }
-
- //
-function creatCardInfo(params) {
-  const info = document.createElement("div")
-  info.className = ""
+  return imageWrap;
 }
 
-function name(params) {
-  
+//ساخت info برای card
+
+function creatCardInfo(product) {
+  const info = document.createElement("div");
+  info.className = "info";
+
+  const category = document.createElement("p");
+  category.textContent = product.category;
+
+  const name = document.createElement("strong");
+  name.textContent = product.name;
+
+  const description = document.createElement("small");
+  description.textContent = product.description;
+
+  info.append(category, name, description);
+  return info;
 }
+
+function createdCardFooter(product) {
+  const footer = document.createElement("div");
+  footer.className = "footer";
+
+  const price = document.createElement("p");
+  price.textContent = `$${product.price}`;
+
+  const addButton = document.createElement("button");
+  addButton.className = "add-button";
+  addButton.textContent = "+add to cart";
+  footer.append(price, addButton);
+  return { footer, addButton };
+}
+
+function createdCardItem(product) {
+  const cartItem = document.createElement("div");
+  cartItem.className = "cart-item";
+  cartItem.hidden = true;
+
+  const cartItemName = document.createElement("span");
+  cartItemName.textContent = product.name;
+
+  const cartItemQty = document.createElement("span");
+  const cartItemPrice = document.createElement("span");
+
+  const removeButton = document.createElement("button");
+  removeButton.className = "remove-btn"
+  removeButton.textContent = "remove"
+  cartItem.append(cartItemName, cartItemQty, cartItemPrice, removeButton);
+  return { cartItem, cartItemQty, cartItemPrice, removeButton };
+}
+
+const cartItems = [];
+
+for (const product of products) {
+  const card = document.createElement("section");
+  card.className = "card";
+  const imageWrap = createImageWrap(product);
+  const info = creatCardInfo(product);
+  const { footer, addButton } = createdCardFooter(product);
+  const { cartItem, cartItemQty, cartItemPrice, removeButton } =
+    createdCardItem(product);
+
+  card.append(imageWrap, info, footer);
+  productsSection.appendChild(card);
+  cartList.appendChild(cartItem);
+  cartItems.push(cartItem);
+
+  addButton.addEventListener("click", () => {
+    product.qty++;
+    cartItemQty.textContent = `× ${product.qty}`;
+    cartItemPrice.textContent = `$${product.qty * product.price}`;
+    cartItem.hidden = false;
+    updateCart();
+  });
+
+  removeButton.addEventListener("click", () => {
+    product.qty = 0;
+    cartItem.hidden = true;
+    updateCart();
+  });
+}
+
+clearButton.addEventListener("click", () => {
+  for (const p of products) {
+    p.qty = 0;
+  }
+  for (const item of cartItems) {
+    item.hidden = true;
+  }
+  updateCart();
+});
