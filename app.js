@@ -51,7 +51,8 @@ logoStart.textContent = "mini";
 const logo = document.createElement("p");
 logo.className = "logo";
 
-const logoEnd = document.createTextNode("shop");
+const logoEnd = document.createElement("span");
+logoEnd.textContent = "shop";
 logo.append(logoStart, logoEnd);
 
 const headerCart = document.createElement("div");
@@ -126,7 +127,7 @@ subtotalRow.append(subtotalLabel, subtotalValue);
 cartSection.append(cartLabel, cartTop, emptyMessage, cartList, subtotalRow);
 
 main.append(mainLabel, mainTitle, productCount, productsSection, cartSection);
-document.body.append(header, main);
+document.body.append(header, main, );
 
 function updateCart() {
   let totalCount = 0;
@@ -139,93 +140,33 @@ function updateCart() {
   cartTitleCount.textContent = `(${totalCount})`;
   subtotalValue.textContent = `$${totalPrice}`;
   emptyMessage.hidden = totalCount > 0;
+  //function ساخت تصویر
+}
+function createImageWrap(product) {
+  // ساخت div برای image
+  const imageWrap = document.createElement("div")
+  imageWrap.className = "image-wrap"
+  const image = document.createElement("img")
+  image.className = "image"
+  image.src = product.image
+  image.alt = product.name
+  imageWrap.appendChild(image)
+  //استفاده از برچسب (badge)
+  if (product.badge !== 0) {
+    const badge = document.createElement("span")
+    badge.className = "badge"
+    badge.textContent = product.badge
+    imageWrap.appendChild(badge)
+  }
+  return imageWrap
+ }
+
+ //
+function creatCardInfo(params) {
+  const info = document.createElement("div")
+  info.className = ""
 }
 
-for (const product of products) {
-  // کارت محصول
-  const card = document.createElement("article");
-  card.className = "card";
-  card.dataset.productId = product.id;
-
-  const imageWrap = document.createElement("div");
-  imageWrap.className = "card-image";
-
-  const image = document.createElement("img");
-  image.className = "card-img";
-  image.src = product.image;
-  image.alt = product.name;
-  imageWrap.appendChild(image);
-
-  if (product.badge !== "") {
-    const badge = document.createElement("span");
-    badge.className = "badge";
-    badge.textContent = product.badge;
-    imageWrap.appendChild(badge);
-  }
-
-  const cardInfo = document.createElement("div");
-  cardInfo.className = "card-info";
-
-  const name = document.createElement("strong");
-  name.textContent = product.name;
-
-  const category = document.createElement("p");
-  category.textContent = product.category;
-
-  const description = document.createElement("small");
-  description.textContent = product.description;
-
-  cardInfo.append(name, category, description);
-
-  const cardFooter = document.createElement("div");
-  cardFooter.className = "card-footer";
-
-  const price = document.createElement("p");
-  price.textContent = `$${product.price}`;
-
-  const addButton = document.createElement("button");
-  addButton.textContent = "+ add to cart";
-
-  cardFooter.append(price, addButton);
-
-  card.append(imageWrap, cardInfo, cardFooter);
-  productsSection.appendChild(card);
-
-  const cartRow = document.createElement("div");
-  cartRow.className = "cart-row";
-  cartRow.hidden = true;
-
-  const cartRowName = document.createElement("span");
-  cartRowName.textContent = product.name;
-
-  const cartRowQty = document.createElement("span");
-
-  const cartRowPrice = document.createElement("strong");
-
-  const removeButton = document.createElement("button");
-  removeButton.className = "remove-btn";
-  removeButton.textContent = "remove";
-
-  cartRow.append(cartRowName, cartRowQty, cartRowPrice, removeButton);
-  cartList.appendChild(cartRow);
-  product.row = cartRow;
-  addButton.addEventListener("click", () => {
-    product.qty++;
-    cartRowQty.textContent = `× ${product.qty}`;
-    cartRowPrice.textContent = `$${product.qty * product.price}`;
-    cartRow.hidden = false;
-    updateCart();
-  });
-  removeButton.addEventListener("click", () => {
-    product.qty = 0;
-    cartRow.hidden = true;
-    updateCart();
-  });
+function name(params) {
+  
 }
-clearButton.addEventListener("click", () => {
-  for (const p of products) {
-    p.qty = 0;
-    p.row.hidden = true;
-  }
-  updateCart();
-});
