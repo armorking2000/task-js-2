@@ -110,9 +110,13 @@ clearButton.textContent = "clear all";
 
 cartTop.append(clearButton, cartTitle);
 
-const emptyMessage = document.createElement("p");
+const emptyMessage = document.createElement("div");
 emptyMessage.className = "empty-message";
-emptyMessage.textContent = "your cart is empty. please choose an item";
+
+const emptyIcon = document.createElement("img")
+emptyIcon.src = "./assets/icons/shopping-cart-01-svgrepo-com.svg"
+emptyIcon.alt = "shopping cart"
+emptyMessage.appendChild(emptyIcon)
 
 const cartList = document.createElement("div");
 cartList.className = "cart-list";

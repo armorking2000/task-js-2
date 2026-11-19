@@ -25,6 +25,7 @@ header {
 }
 .header-cart {
   display: flex;
+  justify-content: space-around;
   align-items: center;
   gap: 8px;
 }
