@@ -59,7 +59,7 @@ const headerCart = document.createElement("div");
 headerCart.className = "header-cart";
 
 const headerCartText = document.createElement("p");
-headerCartText.className = "header-cart-text"
+headerCartText.className = "header-cart-text";
 headerCartText.textContent = "My Cart";
 
 const headerCartBadge = document.createElement("span");
@@ -113,10 +113,10 @@ cartTop.append(clearButton, cartTitle);
 const emptyMessage = document.createElement("div");
 emptyMessage.className = "empty-message";
 
-const emptyIcon = document.createElement("img")
-emptyIcon.src = "./assets/icons/shopping-cart-01-svgrepo-com.svg"
-emptyIcon.alt = "shopping cart"
-emptyMessage.appendChild(emptyIcon)
+const emptyIcon = document.createElement("img");
+emptyIcon.src = "./assets/icons/shopping-cart-01-svgrepo-com.svg";
+emptyIcon.alt = "shopping cart";
+emptyMessage.appendChild(emptyIcon);
 
 const cartList = document.createElement("div");
 cartList.className = "cart-list";
@@ -156,7 +156,6 @@ function createImageWrap(product) {
   image.alt = product.name;
   imageWrap.appendChild(image);
 
-
   if (product.badge !== "") {
     const badge = document.createElement("span");
     badge.className = "badge";
@@ -194,9 +193,41 @@ function createdCardFooter(product) {
 
   const addButton = document.createElement("button");
   addButton.className = "add-button";
-  addButton.textContent = "+add to cart";
-  footer.append(price, addButton);
-  return { footer, addButton };
+  addButton.textContent = "add to cart";
+
+  const counter = document.createElement("div");
+  counter.className = "counter";
+  counter.hidden = true;
+
+  const minusButton = document.createElement("button");
+  minusButton.className = "minus-button";
+  const minus = document.createElement("img");
+  minus.src = "./assets/icons/minus.svg";
+  minus.alt = "minus";
+  minusButton.appendChild(minus);
+
+  const counterValue = document.createElement("span");
+  counterValue.textContent = "0";
+
+  const plusButton = document.createElement("button");
+  plusButton.className = "plus-button";
+  const plus = document.createElement("img");
+  plus.src = "./assets/icons/plus.svg";
+  plus.alt = "plus";
+  plusButton.appendChild(plus);
+
+  counter.append(minusButton, counterValue, plusButton);
+  footer.append(price, addButton, counter);
+  return {
+    footer,
+    addButton,
+    counter,
+    minusButton,
+    minus,
+    counterValue,
+    plusButton,
+    plus,
+  };
 }
 
 function createdCardItem(product) {
@@ -211,39 +242,67 @@ function createdCardItem(product) {
   const cartItemPrice = document.createElement("span");
 
   const removeButton = document.createElement("button");
-  removeButton.className = "remove-btn"
-  removeButton.textContent = "remove"
+  removeButton.className = "remove-btn";
+  removeButton.textContent = "remove";
   cartItem.append(cartItemName, cartItemQty, cartItemPrice, removeButton);
   return { cartItem, cartItemQty, cartItemPrice, removeButton };
 }
-
-const cartItems = [];
 
 for (const product of products) {
   const card = document.createElement("section");
   card.className = "card";
   const imageWrap = createImageWrap(product);
   const info = creatCardInfo(product);
-  const { footer, addButton } = createdCardFooter(product);
+  const {
+    footer,
+    addButton,
+    counter,
+    minusButton,
+    minus,
+    counterValue,
+    plusButton,
+    plus,
+  } = createdCardFooter(product);
   const { cartItem, cartItemQty, cartItemPrice, removeButton } =
     createdCardItem(product);
 
   card.append(imageWrap, info, footer);
   productsSection.appendChild(card);
   cartList.appendChild(cartItem);
-  cartItems.push(cartItem);
+
+  function render() {
+    const qty = product.qty;
+    const price = product.price;
+    addButton.hidden = qty > 0;
+    counter.hidden = qty === 0;
+    counterValue.textContent = qty;
+    cartItemQty.textContent = `${qty}`;
+    cartItemPrice.textContent = `$${qty * price}`;
+    cartItem.hidden = qty === 0;
+  }
+  product.render = render;
 
   addButton.addEventListener("click", () => {
+    product.qty = 1;
+    render();
+    updateCart();
+  });
+
+  minusButton.addEventListener("click", () => {
+    product.qty--;
+    render();
+    updateCart();
+  });
+
+  plusButton.addEventListener("click", () => {
     product.qty++;
-    cartItemQty.textContent = `× ${product.qty}`;
-    cartItemPrice.textContent = `$${product.qty * product.price}`;
-    cartItem.hidden = false;
+    render();
     updateCart();
   });
 
   removeButton.addEventListener("click", () => {
     product.qty = 0;
-    cartItem.hidden = true;
+    render();
     updateCart();
   });
 }
@@ -251,9 +310,7 @@ for (const product of products) {
 clearButton.addEventListener("click", () => {
   for (const p of products) {
     p.qty = 0;
-  }
-  for (const item of cartItems) {
-    item.hidden = true;
+    p.render();
   }
   updateCart();
 });
